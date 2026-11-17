@@ -20,14 +20,22 @@ function BookTable({
 
   const saveEdit = () => {
 
-    if (
-      editBook.title === "" ||
-      editBook.author === "" ||
-      editBook.genre === "" ||
-      editBook.isbn === ""
-    ) {
-      alert("Please fill in all fields.");
-      return;
+   if (
+  editBook.title.trim() === "" ||
+  editBook.author.trim() === "" ||
+  editBook.genre.trim() === "" ||
+  editBook.isbn.trim() === ""
+) {
+  alert("Please fill in all fields.");
+  return;
+}
+
+if (
+  editBook.quantity < 0 ||
+  !Number.isInteger(Number(editBook.quantity))
+) {
+  alert("Quantity must be a whole number and cannot be negative.");
+  return;
     }
 
     updateBook(editBook);

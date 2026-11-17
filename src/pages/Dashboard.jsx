@@ -1,23 +1,23 @@
+
 import React from "react";
 
 function Dashboard({ books }) {
   const totalBooks = books.length;
 
   const totalCopies = books.reduce(
-    (total, book) => {
-      return total + Number(book.quantity);
-    },
+    (total, book) => total + Number(book.quantity),
     0
   );
 
   const lowStockBooks = books.filter(
-    (book) => book.quantity < 2
+    (book) => Number(book.quantity) < 2
   );
 
   return (
     <div className="page">
       <h1>Library Dashboard</h1>
 
+      {/* Dashboard Statistics */}
       <div className="dashboard-cards">
 
         <div className="dashboard-card">
@@ -37,6 +37,7 @@ function Dashboard({ books }) {
 
       </div>
 
+      {/* Book Availability */}
       <div className="table-container">
         <h2>Current Book Availability</h2>
 
@@ -52,28 +53,55 @@ function Dashboard({ books }) {
           </thead>
 
           <tbody>
-            {books.map((book) => (
-              <tr
-                key={book.id}
-                className={
-                  book.quantity < 2
-                    ? "low-stock"
-                    : ""
-                }
-              >
-                <td>{book.title}</td>
-                <td>{book.author}</td>
-                <td>{book.genre}</td>
-                <td>{book.quantity}</td>
-                <td>
-                  {book.quantity < 2
-                    ? "Low Stock"
-                    : "Available"}
+            {books.length === 0 ? (
+              <tr>
+                <td colSpan="5">
+                  No books have been registered yet.
                 </td>
               </tr>
-            ))}
+            ) : (
+              books.map((book) => {
+                const quantity = Number(book.quantity);
+
+                return (
+                  <tr
+                    key={book.id}
+                    className={quantity < 2 ? "low-stock" : ""}
+                  >
+                    <td>{book.title}</td>
+                    <td>{book.author}</td>
+                    <td>{book.genre}</td>
+                    <td>{quantity}</td>
+                    <td>
+                      {quantity === 0
+                        ? "Out of Stock"
+                        : quantity < 2
+                        ? "Low Stock"
+                        : "Available"}
+                    </td>
+                  </tr>
+                );
+              })
+            )}
           </tbody>
         </table>
+      </div>
+
+      {/* Low Stock Details */}
+      <div className="table-container">
+        <h2>Low Stock Alerts</h2>
+
+        {lowStockBooks.length === 0 ? (
+          <p>There are currently no low-stock books.</p>
+        ) : (
+          <ul>
+            {lowStockBooks.map((book) => (
+              <li key={book.id}>
+                {book.title} — {Number(book.quantity)} copies remaining
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
     </div>
